@@ -51,6 +51,9 @@
      </rect>
     </property>
     <layout class="QHBoxLayout" name="MenuLayout">
+     <property name="spacing">
+      <number>2</number>
+     </property>
      <item>
       <widget class="QPushButton" name="pushButton">
        <property name="sizePolicy">
@@ -113,7 +116,7 @@
      </item>
     </layout>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>0</x>
@@ -279,7 +282,7 @@
      </item>
     </layout>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>0</x>
@@ -289,6 +292,9 @@
      </rect>
     </property>
     <layout class="QVBoxLayout" name="TextLabelLayout">
+     <property name="spacing">
+      <number>0</number>
+     </property>
      <item>
       <widget class="QLabel" name="textLabelunder">
        <property name="sizePolicy">
@@ -377,7 +383,7 @@
      </item>
     </layout>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>0</x>
@@ -404,6 +410,9 @@
      </property>
      <property name="bottomMargin">
       <number>2</number>
+     </property>
+     <property name="spacing">
+      <number>0</number>
      </property>
      <item row="2" column="1">
       <widget class="QPushButton" name="btn8">
