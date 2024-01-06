@@ -27,3 +27,7 @@ void MainWindow::loadStyleSheet(const QString &styleSheetFile)
         QMessageBox::information(this, "tip", "Failed to open StyleSheetFile file");
     }
 }
+
+void MainWindow::on_btnSwitchMod_currentIndexChanged(int index)
+{
+}
