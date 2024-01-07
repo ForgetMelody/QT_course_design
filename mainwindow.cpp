@@ -6,6 +6,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     //    this->loadStyleSheet(":/style.qss"); 弃用
+    ui->btnSwitchMod->setCurrentIndex(0);
 }
 
 MainWindow::~MainWindow()
@@ -30,4 +31,5 @@ void MainWindow::loadStyleSheet(const QString &styleSheetFile)
 
 void MainWindow::on_btnSwitchMod_currentIndexChanged(int index)
 {
+    ui->stackedWidget->setCurrentIndex(index);
 }
