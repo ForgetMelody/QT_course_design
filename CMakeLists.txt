@@ -36,6 +36,8 @@ if(ANDROID)
     main.cpp
     mainwindow.cpp
     mainwindow.h
+    calculator.h
+    calculator.cpp
     mainwindow.ui
     resource.qrc
     ${TS_FILES}
@@ -45,6 +47,8 @@ else()
     main.cpp
     mainwindow.cpp
     mainwindow.h
+    calculator.h
+    calculator.cpp
     mainwindow.ui
     resource.qrc
     ${TS_FILES}

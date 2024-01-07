@@ -4,6 +4,10 @@
 #include <QMainWindow>
 #include <QMessageBox>
 #include <QFile>
+#include <QString>
+#include <QSignalMapper>
+#include <calculator.h>
+
 QT_BEGIN_NAMESPACE
 namespace Ui
 {
@@ -16,6 +20,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT;
 
 public:
+    // 模式
     enum ModeIdx
     {
         Standard = 0,
@@ -23,11 +28,23 @@ public:
         Programmer,
         Date
     };
+
+    // 计算类
+    Calculator c;
+
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+
+    // 存储widget
+    QPushButton *numButtons[30]; // 数值操作类型 0~9 pi e
+    // 加载样式
     void loadStyleSheet(const QString &styleSheetFile);
+    // 处理和映射按键信号
+    void mappingSignalAndSlot();
 private slots:
     void on_btnSwitchMod_currentIndexChanged(int index);
+    // number button or special button like e,π
+    void NumBtn_clicked(int index);
 
 private:
     Ui::MainWindow *ui;
