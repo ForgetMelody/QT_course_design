@@ -26,14 +26,14 @@ void Calculator::EditNum(QString input)
         if (!afterPoint[Index])
         {
             // 小数点之前
-            Num[Index] = Num[Index] * 10 + in;
+            Num[Index] = Num[Index] * 10 + IsNeg[Index] * in;
         }
 
         else
         {
             // 小数点之后
             scale[Index] *= 0.1;
-            Num[Index] += in * scale[Index];
+            Num[Index] += IsNeg[Index] * in * scale[Index];
         }
     }
     // 字母
@@ -81,11 +81,13 @@ void Calculator::EditNum(QString input)
             {
                 afterPoint[Index] = false;
             }
-            else
-            {
-                Num[Index] -= int(Num[Index]) % 10;
-                Num[Index] /= 10;
-            }
+            Num[Index] -= int(Num[Index]) % 10;
+            Num[Index] /= 10;
         }
+    }
+    else if (input == "±")
+    {
+        IsNeg[Index] *= -1;
+        Num[Index] *= -1;
     }
 }
