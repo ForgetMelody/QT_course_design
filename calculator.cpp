@@ -74,8 +74,8 @@ void Calculator::EditNum(QString input)
         Num[1] = 0;
         scale[0] = 1;
         scale[1] = 1;
-        IsNeg[0] = false;
-        IsNeg[1] = false;
+        IsNeg[0] = 1;
+        IsNeg[1] = 1;
         Index = 0;
     }
     else if (input == "DEL")
@@ -142,7 +142,7 @@ void Calculator::doCalculation()
 
     // 将运算结果存入Num[0]
     Num[0] = result;
-    Index = 0;
+    qDebug() << "result: " << result;
     // 更新运算结果信息
     if (result >= 0)
         IsNeg[0] = 1;
@@ -156,11 +156,12 @@ void Calculator::doCalculation()
         // 判断Num[0]有多少位小数,并更新到scale[0]
         scale[0] = pow(10, -getScale(Num[0]));
     }
-    // 清空1的缓存
+    // 重新记录Num{1}
     Num[1] = 0;
     scale[1] = 1;
     afterPoint[1] = false;
     IsNeg[1] = 1;
+    Index = 0;
 }
 
 int Calculator::getScale(double input)

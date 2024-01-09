@@ -62,6 +62,7 @@ void MainWindow::OpBtn_clicked(int index)
 
 void MainWindow::EqualBtn_clicked()
 {
+    qDebug() << "equal button clicked";
     c.doCalculation();
     UpdateMainLabel();
     UpdateUnderLabel();
@@ -87,10 +88,21 @@ void MainWindow::UpdateMainLabel()
         int prec = c.getScale(c.Num[c.Index]);
         if (prec == 0)
             prec = 1;
-        qDebug() << "scale: " << c.scale[c.Index] << " 小数点后位数n: " << prec;
-        ui->textLabelmain->setText(QString::number(c.Num[c.Index], 'f', prec));
-        ui->textLabelmain_2->setText(QString::number(c.Num[c.Index], 'f', prec));
-        ui->textLabelmain_3->setText(QString::number(c.Num[c.Index], 'f', prec));
+        // qDebug() << "scale: " << c.scale[c.Index] << " 小数点后位数n: " << prec;
+
+        if (prec == c.maxPrec) // 超过最大位数，用科学计数法
+        {
+            qWarning() << "scale = c.maxPrec 达到小数点最大位";
+            ui->textLabelmain->setText(QString::number(c.Num[c.Index], 'e', 6));
+            ui->textLabelmain_2->setText(QString::number(c.Num[c.Index], 'e', 6));
+            ui->textLabelmain_3->setText(QString::number(c.Num[c.Index], 'e', 6));
+        }
+        else
+        {
+            ui->textLabelmain->setText(QString::number(c.Num[c.Index], 'f', prec));
+            ui->textLabelmain_2->setText(QString::number(c.Num[c.Index], 'f', prec));
+            ui->textLabelmain_3->setText(QString::number(c.Num[c.Index], 'f', prec));
+        }
     }
 }
 
@@ -99,7 +111,11 @@ void MainWindow::UpdateUnderLabel()
     if (c.Index == 1)
     {
         int prec = c.getScale(c.Num[0]);
-        QString text = QString::number(c.Num[0], 'f', prec) + c.Opflag;
+        QString text;
+        if (prec == c.maxPrec)
+            text = QString::number(c.Num[0]) + c.Opflag;
+        else
+            text = QString::number(c.Num[0], 'f', prec) + c.Opflag;
         ui->textLabelunder->setText(text);
         ui->textLabelunder_2->setText(text);
         ui->textLabelunder_3->setText(text);

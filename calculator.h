@@ -5,6 +5,7 @@
 #include <cmath>
 #include <stack>
 #include <QString>
+#include <QDebug>
 #include <qmath.h>
 using namespace std;
 
