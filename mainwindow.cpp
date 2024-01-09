@@ -203,8 +203,12 @@ void MainWindow::mappingSignalAndSlot()
     // sqrt2
     numButtons[50] = ui->btnSqrt;
     numButtons[51] = ui->btnSqrt_2;
+    // 10^x
+    numButtons[52] = ui->btn10times;
+    // ln
+    numButtons[53] = ui->btnLn;
 
-    for (int i = 0; i < 52; i++)
+    for (int i = 0; i < 54; i++)
     {
         connect(numButtons[i], SIGNAL(clicked()), NumMapper, SLOT(map()));
         NumMapper->setMapping(numButtons[i], i);

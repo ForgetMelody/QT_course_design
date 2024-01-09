@@ -13,7 +13,7 @@ Calculator::Calculator()
     afterPoint[0] = false;
     Index = 0;
     result = 0;
-    maxPrec = 10;
+    maxPrec = 20;
     inputexpression = "";
 }
 /**
@@ -47,13 +47,21 @@ void Calculator::EditNum(QString input)
         }
     }
     // 字母
-    else if (input == "π")
+    else if (input == "e" || input == "E" || input == "π")
     {
-        Num[Index] *= M_PI;
-    }
-    else if (input == "e" || input == "E")
-    {
-        Num[Index] *= M_E;
+        double tmp = 0;
+        if (input == "e" || input == "E")
+            tmp = M_E;
+        else
+            tmp = M_PI;
+        if (Num[Index] == 0)
+            Num[Index] = tmp;
+        else
+            Num[Index] *= tmp;
+
+        afterPoint[Index] = true;
+        qDebug() << "Num: " << Num[Index];
+        scale[Index] = pow(10, -getScale(Num[Index]));
     }
     else if (input == ".")
     {
@@ -123,6 +131,20 @@ void Calculator::EditNum(QString input)
         scale[Index] = pow(10, -getScale(Num[Index]));
         afterPoint[Index] = scale[Index] < 1 ? true : false;
         IsNeg[Index] = Num[Index] >= 0 ? 1 : -1;
+    }
+    else if (input == "10^x")
+    {
+        Num[Index] = pow(10, Num[Index]);
+        scale[Index] = pow(10, -getScale(Num[Index]));
+        afterPoint[Index] = scale[Index] < 1 ? true : false;
+        IsNeg[Index] = 1;
+    }
+    else if (input == "ln")
+    {
+        Num[Index] = log(Num[Index]);
+        scale[Index] = pow(10, -getScale(Num[Index]));
+        afterPoint[Index] = scale[Index] < 1 ? true : false;
+        IsNeg[Index] = 1;
     }
 }
 
