@@ -46,19 +46,32 @@ void MainWindow::NumBtn_clicked(int index)
 {
     // 数值部分操作
     QString text = numButtons[index]->text();
-    qDebug() << "number button\"" << text << "\" clicked";
+    qDebug() << "number button" << text << " clicked";
     c.EditNum(text);
 
     // 更新显示
-    UpdateTextlabel();
+    UpdateMainLabel();
+}
+void MainWindow::OpBtn_clicked(int index)
+{
+    QString text = opButtons[index]->text();
+    qDebug() << "operator button" << text << " clicked";
+    c.EditOp(text);
+    UpdateUnderLabel();
 }
 
+void MainWindow::EqualBtn_clicked()
+{
+    c.doCalculation();
+    UpdateMainLabel();
+    UpdateUnderLabel();
+}
 /**
  * Updates the text label in the main window.
  *
  * @throws None
  */
-void MainWindow::UpdateTextlabel()
+void MainWindow::UpdateMainLabel()
 {
 
     if (!c.afterPoint[c.Index])
@@ -71,22 +84,34 @@ void MainWindow::UpdateTextlabel()
     else
     {
         // 计算目前小数点后有几位
-        double current = c.scale[c.Index];
-        int n = 0;
-        // qDebug() << "scale: " << c.scale[c.Index];
-        while (current < 1)
-        {
-            n++;
-            current *= 10;
-        }
-        if (n == 0)
-            n = 1;
-        qDebug() << "scale: " << c.scale[c.Index] << " 小数点后位数n: " << n;
-        ui->textLabelmain->setText(QString::number(c.Num[c.Index], 'f', n));
-        ui->textLabelmain_2->setText(QString::number(c.Num[c.Index], 'f', n));
-        ui->textLabelmain_3->setText(QString::number(c.Num[c.Index], 'f', n));
+        int prec = c.getScale(c.Num[c.Index]);
+        if (prec == 0)
+            prec = 1;
+        qDebug() << "scale: " << c.scale[c.Index] << " 小数点后位数n: " << prec;
+        ui->textLabelmain->setText(QString::number(c.Num[c.Index], 'f', prec));
+        ui->textLabelmain_2->setText(QString::number(c.Num[c.Index], 'f', prec));
+        ui->textLabelmain_3->setText(QString::number(c.Num[c.Index], 'f', prec));
     }
 }
+
+void MainWindow::UpdateUnderLabel()
+{
+    if (c.Index == 1)
+    {
+        int prec = c.getScale(c.Num[0]);
+        QString text = QString::number(c.Num[0], 'f', prec) + c.Opflag;
+        ui->textLabelunder->setText(text);
+        ui->textLabelunder_2->setText(text);
+        ui->textLabelunder_3->setText(text);
+    }
+    else
+    {
+        ui->textLabelunder->setText("");
+        ui->textLabelunder_2->setText("");
+        ui->textLabelunder_3->setText("");
+    }
+}
+
 /**
  * Maps the signals and slots for the MainWindow class.
  *
@@ -94,7 +119,7 @@ void MainWindow::UpdateTextlabel()
  */
 void MainWindow::mappingSignalAndSlot()
 {
-    QSignalMapper *mapper = new QSignalMapper(this);
+    QSignalMapper *NumMapper = new QSignalMapper(this);
     // numbers
     numButtons[0] = ui->btn0;
     numButtons[1] = ui->btn1;
@@ -156,8 +181,39 @@ void MainWindow::mappingSignalAndSlot()
 
     for (int i = 0; i < 46; i++)
     {
-        connect(numButtons[i], SIGNAL(clicked()), mapper, SLOT(map()));
-        mapper->setMapping(numButtons[i], i);
+        connect(numButtons[i], SIGNAL(clicked()), NumMapper, SLOT(map()));
+        NumMapper->setMapping(numButtons[i], i);
     }
-    connect(mapper, SIGNAL(mapped(int)), this, SLOT(NumBtn_clicked(int)));
+    connect(NumMapper, SIGNAL(mapped(int)), this, SLOT(NumBtn_clicked(int)));
+
+    // operations
+    QSignalMapper *OpMapper = new QSignalMapper(this);
+
+    opButtons[0] = ui->btnAdd;
+    opButtons[1] = ui->btnMinus;
+    opButtons[2] = ui->btnMultiple;
+    opButtons[3] = ui->btnDivide;
+    opButtons[4] = ui->btnMod;
+
+    opButtons[5] = ui->btnAdd_2;
+    opButtons[6] = ui->btnMinus_2;
+    opButtons[7] = ui->btnMultiple_2;
+    opButtons[8] = ui->btnDivide_2;
+
+    opButtons[9] = ui->btnAdd_3;
+    opButtons[10] = ui->btnMinus_3;
+    opButtons[11] = ui->btnMultiple_3;
+    opButtons[12] = ui->btnDivide_3;
+
+    for (int i = 0; i < 13; i++)
+    {
+        connect(opButtons[i], SIGNAL(clicked()), OpMapper, SLOT(map()));
+        OpMapper->setMapping(opButtons[i], i);
+    }
+    connect(OpMapper, SIGNAL(mapped(int)), this, SLOT(OpBtn_clicked(int)));
+
+    // equal btn
+    connect(ui->btnEqual, SIGNAL(clicked()), this, SLOT(EqualBtn_clicked()));
+    connect(ui->btnEqual_2, SIGNAL(clicked()), this, SLOT(EqualBtn_clicked()));
+    connect(ui->btnEqual_3, SIGNAL(clicked()), this, SLOT(EqualBtn_clicked()));
 }

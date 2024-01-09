@@ -13,8 +13,18 @@ Calculator::Calculator()
     afterPoint[0] = false;
     Index = 0;
     result = 0;
+    maxPrec = 10;
     inputexpression = "";
 }
+/**
+ * EditNum function performs editing operations on a number.
+ *
+ * @param input A QString representing the input value.
+ *
+ * @return void
+ *
+ * @throws None
+ */
 void Calculator::EditNum(QString input)
 {
     bool isNum;
@@ -90,4 +100,80 @@ void Calculator::EditNum(QString input)
         IsNeg[Index] *= -1;
         Num[Index] *= -1;
     }
+}
+
+void Calculator::EditOp(QString input)
+{
+    // 更改编辑操作数
+    if (Index == 0)
+    {
+        // 记录运算符
+        Opflag = input;
+        Index = 1;
+    }
+    else if (Index == 1)
+    {
+        // 连续运算
+        doCalculation();
+
+        Opflag = input;
+        // 重新记录Num{1}
+        Index = 1;
+    }
+}
+void Calculator::doCalculation()
+{
+    if (Opflag == "+")
+    {
+        result = Num[0] + Num[1];
+    }
+    else if (Opflag == "-")
+    {
+        result = Num[0] - Num[1];
+    }
+    else if (Opflag == "×")
+    {
+        result = Num[0] * Num[1];
+    }
+    else if (Opflag == "÷")
+    {
+        result = Num[0] / Num[1];
+    }
+
+    // 将运算结果存入Num[0]
+    Num[0] = result;
+    Index = 0;
+    // 更新运算结果信息
+    if (result >= 0)
+        IsNeg[0] = 1;
+    else
+        IsNeg[0] = -1;
+    if (int(Num[0]) == Num[0])
+        afterPoint[0] = false;
+    else
+    {
+        afterPoint[0] = true;
+        // 判断Num[0]有多少位小数,并更新到scale[0]
+        scale[0] = pow(10, -getScale(Num[0]));
+    }
+    // 清空1的缓存
+    Num[1] = 0;
+    scale[1] = 1;
+    afterPoint[1] = false;
+    IsNeg[1] = 1;
+}
+
+int Calculator::getScale(double input)
+{
+    // 计算小数点位数
+    int n = 0;
+    // qDebug() << "scale: " << c.scale[c.Index];
+    while (input != int(input))
+    {
+        n++;
+        input *= 10;
+        if (n >= maxPrec)
+            break;
+    }
+    return n;
 }

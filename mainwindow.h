@@ -37,17 +37,21 @@ public:
 
     // 存储widget
     QPushButton *numButtons[46]; // 单目数值操作类型 0~9 pi e . ±
+    QPushButton *opButtons[13];  // 双目数值操作类型 + - * /
     // 加载样式
     void loadStyleSheet(const QString &styleSheetFile);
     // 处理和映射按键信号
     void mappingSignalAndSlot();
 
-    // 更新主副Label
-    void UpdateTextlabel();
+    // 更新主Label
+    void UpdateMainLabel();
+    void UpdateUnderLabel();
 private slots:
     void on_btnSwitchMod_currentIndexChanged(int index);
     // number button or special button like e,π
     void NumBtn_clicked(int index);
+    void OpBtn_clicked(int index);
+    void EqualBtn_clicked();
 
 private:
     Ui::MainWindow *ui;
