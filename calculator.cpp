@@ -100,6 +100,30 @@ void Calculator::EditNum(QString input)
         IsNeg[Index] *= -1;
         Num[Index] *= -1;
     }
+    else if (input == "1/x")
+    {
+        Num[Index] = 1 / Num[Index];
+        scale[Index] = pow(10, -getScale(Num[Index]));
+        afterPoint[Index] = scale[Index] < 1 ? true : false;
+    }
+    else if (input == "X²")
+    {
+        Num[Index] = pow(Num[Index], 2);
+        scale[Index] = pow(10, -getScale(Num[Index]));
+        afterPoint[Index] = scale[Index] < 1 ? true : false;
+        IsNeg[Index] = 1;
+    }
+    else if (input == "²√x")
+    {
+        if (Num[Index] < 0)
+        {
+            return;
+        }
+        Num[Index] = pow(Num[Index], 0.5);
+        scale[Index] = pow(10, -getScale(Num[Index]));
+        afterPoint[Index] = scale[Index] < 1 ? true : false;
+        IsNeg[Index] = Num[Index] >= 0 ? 1 : -1;
+    }
 }
 
 void Calculator::EditOp(QString input)

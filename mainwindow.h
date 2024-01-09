@@ -36,7 +36,7 @@ public:
     ~MainWindow();
 
     // 存储widget
-    QPushButton *numButtons[46]; // 单目数值操作类型 0~9 pi e . ±
+    QPushButton *numButtons[51]; // 单目数值操作类型 0~9 pi e . ±
     QPushButton *opButtons[13];  // 双目数值操作类型 + - * /
     // 加载样式
     void loadStyleSheet(const QString &styleSheetFile);

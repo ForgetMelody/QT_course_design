@@ -194,8 +194,17 @@ void MainWindow::mappingSignalAndSlot()
     numButtons[43] = ui->btnNeg;
     numButtons[44] = ui->btnNeg_2;
     numButtons[45] = ui->btnNeg_3;
+    // 1/x
+    numButtons[46] = ui->btnInverse;
+    numButtons[47] = ui->btnInverse_2;
+    // pow2
+    numButtons[48] = ui->btnPow2;
+    numButtons[49] = ui->btnPow2_2;
+    // sqrt2
+    numButtons[50] = ui->btnSqrt;
+    numButtons[51] = ui->btnSqrt_2;
 
-    for (int i = 0; i < 46; i++)
+    for (int i = 0; i < 52; i++)
     {
         connect(numButtons[i], SIGNAL(clicked()), NumMapper, SLOT(map()));
         NumMapper->setMapping(numButtons[i], i);
