@@ -14,6 +14,7 @@ Calculator::Calculator()
     Index = 0;
     result = 0;
     maxPrec = 20;
+    base = 10;
     inputexpression = "";
 }
 /**
@@ -36,13 +37,13 @@ void Calculator::EditNum(QString input)
         if (!afterPoint[Index])
         {
             // 小数点之前
-            Num[Index] = Num[Index] * 10 + IsNeg[Index] * in;
+            Num[Index] = Num[Index] * base + IsNeg[Index] * in;
         }
 
         else
         {
             // 小数点之后
-            scale[Index] *= 0.1;
+            scale[Index] *= (1 / base);
             Num[Index] += IsNeg[Index] * in * scale[Index];
         }
     }
@@ -90,7 +91,7 @@ void Calculator::EditNum(QString input)
     {
         if (scale[Index] < 1)
         {
-            scale[Index] *= 10;
+            scale[Index] *= base;
             Num[Index] -= fmod(Num[Index], scale[Index]);
         }
         else
@@ -99,8 +100,8 @@ void Calculator::EditNum(QString input)
             {
                 afterPoint[Index] = false;
             }
-            Num[Index] -= int(Num[Index]) % 10;
-            Num[Index] /= 10;
+            Num[Index] -= int(Num[Index]) % base;
+            Num[Index] /= base;
         }
     }
     else if (input == "±")
@@ -111,13 +112,13 @@ void Calculator::EditNum(QString input)
     else if (input == "1/x")
     {
         Num[Index] = 1 / Num[Index];
-        scale[Index] = pow(10, -getScale(Num[Index]));
+        scale[Index] = pow(base, -getScale(Num[Index]));
         afterPoint[Index] = scale[Index] < 1 ? true : false;
     }
     else if (input == "X²")
     {
         Num[Index] = pow(Num[Index], 2);
-        scale[Index] = pow(10, -getScale(Num[Index]));
+        scale[Index] = pow(base, -getScale(Num[Index]));
         afterPoint[Index] = scale[Index] < 1 ? true : false;
         IsNeg[Index] = 1;
     }
@@ -128,7 +129,7 @@ void Calculator::EditNum(QString input)
             return;
         }
         Num[Index] = pow(Num[Index], 0.5);
-        scale[Index] = pow(10, -getScale(Num[Index]));
+        scale[Index] = pow(base, -getScale(Num[Index]));
         afterPoint[Index] = scale[Index] < 1 ? true : false;
         IsNeg[Index] = Num[Index] >= 0 ? 1 : -1;
     }
@@ -147,7 +148,22 @@ void Calculator::EditNum(QString input)
         IsNeg[Index] = 1;
     }
 }
-
+// 16进制特殊字符输入
+void Calculator::EditHex(QString input)
+{
+    if (input == "A")
+        Num[Index] = Num[Index] * 16 + IsNeg[Index] * 10;
+    else if (input == "B")
+        Num[Index] = Num[Index] * 16 + IsNeg[Index] * 11;
+    else if (input == "C")
+        Num[Index] = Num[Index] * 16 + IsNeg[Index] * 12;
+    else if (input == "D")
+        Num[Index] = Num[Index] * 16 + IsNeg[Index] * 13;
+    else if (input == "E")
+        Num[Index] = Num[Index] * 16 + IsNeg[Index] * 14;
+    else if (input == "F")
+        Num[Index] = Num[Index] * 16 + IsNeg[Index] * 15;
+}
 void Calculator::EditOp(QString input)
 {
     // 更改编辑操作数

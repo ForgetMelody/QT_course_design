@@ -16,6 +16,10 @@ MainWindow::MainWindow(QWidget *parent)
 
     // mapping signals
     mappingSignalAndSlot();
+
+    // Programmer
+    ui->DecRadioBtn->setChecked(true);
+    ui->btnDot_3->setEnabled(false);
 }
 
 MainWindow::~MainWindow()
@@ -41,7 +45,23 @@ void MainWindow::loadStyleSheet(const QString &styleSheetFile)
 void MainWindow::on_btnSwitchMod_currentIndexChanged(int index)
 {
     ui->stackedWidget->setCurrentIndex(index);
+    // Programmer
+    if (index == 2)
+    {
+        c.Num[0] = int(c.Num[0]);
+        c.Num[1] = int(c.Num[1]);
+        c.afterPoint[0] = false;
+        c.afterPoint[1] = false;
+        c.scale[0] = 1;
+        c.scale[1] = 1;
+        UpdateProgrammerLabel();
+    }
+    else
+    {
+        c.base = 10;
+    }
 }
+
 void MainWindow::NumBtn_clicked(int index)
 {
     // 数值部分操作
@@ -59,7 +79,13 @@ void MainWindow::OpBtn_clicked(int index)
     c.EditOp(text);
     UpdateUnderLabel();
 }
-
+void MainWindow::hexBtn_clicked(int index)
+{
+    QString text = hexButtons[index]->text();
+    qDebug() << "hex button" << text << " clicked";
+    c.EditHex(text);
+    UpdateMainLabel();
+}
 void MainWindow::EqualBtn_clicked()
 {
     qDebug() << "equal button clicked";
@@ -74,36 +100,44 @@ void MainWindow::EqualBtn_clicked()
  */
 void MainWindow::UpdateMainLabel()
 {
-
-    if (!c.afterPoint[c.Index])
+    if (c.base == 10)
     {
-        // 没有小数部分
-        ui->textLabelmain->setText(QString::number(c.Num[c.Index], 'f', 0));
-        ui->textLabelmain_2->setText(QString::number(c.Num[c.Index], 'f', 0));
-        ui->textLabelmain_3->setText(QString::number(c.Num[c.Index], 'f', 0));
-    }
-    else
-    {
-        // 计算目前小数点后有几位
-        int prec = c.getScale(c.Num[c.Index]);
-        if (prec == 0)
-            prec = 1;
-        // qDebug() << "scale: " << c.scale[c.Index] << " 小数点后位数n: " << prec;
-
-        if (prec == c.maxPrec) // 超过最大位数，用科学计数法
+        if (!c.afterPoint[c.Index])
         {
-            qWarning() << "scale = c.maxPrec 达到小数点最大位";
-            ui->textLabelmain->setText(QString::number(c.Num[c.Index], 'e', 6));
-            ui->textLabelmain_2->setText(QString::number(c.Num[c.Index], 'e', 6));
-            ui->textLabelmain_3->setText(QString::number(c.Num[c.Index], 'e', 6));
+            // 没有小数部分
+            ui->textLabelmain->setText(QString::number(c.Num[c.Index], 'f', 0));
+            ui->textLabelmain_2->setText(QString::number(c.Num[c.Index], 'f', 0));
+            ui->textLabelmain_3->setText(QString::number(c.Num[c.Index], 'f', 0));
         }
         else
         {
-            ui->textLabelmain->setText(QString::number(c.Num[c.Index], 'f', prec));
-            ui->textLabelmain_2->setText(QString::number(c.Num[c.Index], 'f', prec));
-            ui->textLabelmain_3->setText(QString::number(c.Num[c.Index], 'f', prec));
+            // 计算目前小数点后有几位
+            int prec = c.getScale(c.Num[c.Index]);
+            if (prec == 0)
+                prec = 1;
+            // qDebug() << "scale: " << c.scale[c.Index] << " 小数点后位数n: " << prec;
+
+            if (prec == c.maxPrec) // 超过最大位数，用科学计数法
+            {
+                qWarning() << "scale = c.maxPrec 达到小数点最大位";
+                ui->textLabelmain->setText(QString::number(c.Num[c.Index], 'e', 6));
+                ui->textLabelmain_2->setText(QString::number(c.Num[c.Index], 'e', 6));
+                ui->textLabelmain_3->setText(QString::number(c.Num[c.Index], 'e', 6));
+            }
+            else
+            {
+                ui->textLabelmain->setText(QString::number(c.Num[c.Index], 'f', prec));
+                ui->textLabelmain_2->setText(QString::number(c.Num[c.Index], 'f', prec));
+                ui->textLabelmain_3->setText(QString::number(c.Num[c.Index], 'f', prec));
+            }
         }
     }
+    else
+    {
+        QString text = QString::number(int(c.Num[c.Index]), c.base);
+        ui->textLabelmain_3->setText(text);
+    }
+    UpdateProgrammerLabel();
 }
 
 void MainWindow::UpdateUnderLabel()
@@ -127,7 +161,20 @@ void MainWindow::UpdateUnderLabel()
         ui->textLabelunder_3->setText("");
     }
 }
-
+void MainWindow::UpdateProgrammerLabel()
+{
+    // 更新各个进制小框的数值
+    ui->DecLabel->setText(QString::number(int(c.Num[c.Index]), 10));
+    // 将十进制转为二进制
+    QString text = QString::number(int(c.Num[c.Index]), 2);
+    ui->BinLabel->setText(text);
+    // 将二进制转为八进制
+    text = QString::number(int(c.Num[c.Index]), 8);
+    ui->OctLabel->setText(text);
+    // 将二进制转为十六进制
+    text = QString::number(int(c.Num[c.Index]), 16);
+    ui->HexLabel->setText(text);
+}
 /**
  * Maps the signals and slots for the MainWindow class.
  *
@@ -241,8 +288,88 @@ void MainWindow::mappingSignalAndSlot()
     }
     connect(OpMapper, SIGNAL(mapped(int)), this, SLOT(OpBtn_clicked(int)));
 
+    // hexButtons
+    QSignalMapper *hexMapper = new QSignalMapper(this);
+
+    hexButtons[0] = ui->btnA;
+    hexButtons[1] = ui->btnB;
+    hexButtons[2] = ui->btnC_4;
+    hexButtons[3] = ui->btnD;
+    hexButtons[4] = ui->btnE_2;
+    hexButtons[5] = ui->btnF;
+
+    for (int i = 0; i < 6; i++)
+    {
+        connect(hexButtons[i], SIGNAL(clicked()), hexMapper, SLOT(map()));
+        hexMapper->setMapping(hexButtons[i], i);
+    }
+    connect(hexMapper, SIGNAL(mapped(int)), this, SLOT(hexBtn_clicked(int)));
+
     // equal btn
     connect(ui->btnEqual, SIGNAL(clicked()), this, SLOT(EqualBtn_clicked()));
     connect(ui->btnEqual_2, SIGNAL(clicked()), this, SLOT(EqualBtn_clicked()));
     connect(ui->btnEqual_3, SIGNAL(clicked()), this, SLOT(EqualBtn_clicked()));
+}
+void MainWindow::on_HexRadioBtn_clicked()
+{
+    on_DecRadioBtn_clicked();
+    c.base = 16;
+    ui->btnA->setEnabled(true);
+    ui->btnB->setEnabled(true);
+    ui->btnC_4->setEnabled(true);
+    ui->btnD->setEnabled(true);
+    ui->btnE_2->setEnabled(true);
+    ui->btnF->setEnabled(true);
+
+    QString text = QString::number(int(c.Num[c.Index]), c.base);
+    ui->textLabelmain_3->setText(text);
+}
+
+void MainWindow::on_DecRadioBtn_clicked()
+{
+    c.base = 10;
+    ui->btn3_3->setEnabled(true);
+    ui->btn4_3->setEnabled(true);
+    ui->btn5_3->setEnabled(true);
+    ui->btn6_3->setEnabled(true);
+    ui->btn7_3->setEnabled(true);
+    ui->btn8_3->setEnabled(true);
+    ui->btn9_3->setEnabled(true);
+    ui->btnA->setEnabled(false);
+    ui->btnB->setEnabled(false);
+    ui->btnC_4->setEnabled(false);
+    ui->btnD->setEnabled(false);
+    ui->btnE_2->setEnabled(false);
+    ui->btnF->setEnabled(false);
+
+    QString text = QString::number(int(c.Num[c.Index]), c.base);
+    ui->textLabelmain_3->setText(text);
+}
+
+void MainWindow::on_OctRadioBtn_clicked()
+{
+    on_DecRadioBtn_clicked();
+    c.base = 8;
+    ui->btn8_3->setEnabled(false);
+    ui->btn9_3->setEnabled(false);
+
+    QString text = QString::number(int(c.Num[c.Index]), c.base);
+    ui->textLabelmain_3->setText(text);
+}
+
+void MainWindow::on_BinRadioBtn_clicked()
+{
+    on_DecRadioBtn_clicked();
+    c.base = 2;
+    ui->btn2_3->setEnabled(false);
+    ui->btn3_3->setEnabled(false);
+    ui->btn4_3->setEnabled(false);
+    ui->btn5_3->setEnabled(false);
+    ui->btn6_3->setEnabled(false);
+    ui->btn7_3->setEnabled(false);
+    ui->btn8_3->setEnabled(false);
+    ui->btn9_3->setEnabled(false);
+
+    QString text = QString::number(int(c.Num[c.Index]), c.base);
+    ui->textLabelmain_3->setText(text);
 }

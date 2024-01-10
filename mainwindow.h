@@ -38,6 +38,7 @@ public:
     // 存储widget
     QPushButton *numButtons[54]; // 单目数值操作类型 0~9 pi e . ±
     QPushButton *opButtons[13];  // 双目数值操作类型 + - * /
+    QPushButton *hexButtons[6];  // 16进制操作类型 (由于C和Clear的C冲突了，所以这部分单独分开)
     // 加载样式
     void loadStyleSheet(const QString &styleSheetFile);
     // 处理和映射按键信号
@@ -46,12 +47,18 @@ public:
     // 更新主Label
     void UpdateMainLabel();
     void UpdateUnderLabel();
+    void UpdateProgrammerLabel();
 private slots:
     void on_btnSwitchMod_currentIndexChanged(int index);
     // number button or special button like e,π
     void NumBtn_clicked(int index);
     void OpBtn_clicked(int index);
+    void hexBtn_clicked(int index);
     void EqualBtn_clicked();
+    void on_HexRadioBtn_clicked();
+    void on_DecRadioBtn_clicked();
+    void on_OctRadioBtn_clicked();
+    void on_BinRadioBtn_clicked();
 
 private:
     Ui::MainWindow *ui;

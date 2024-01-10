@@ -24,19 +24,17 @@ public:
     double result;
     int maxPrec;    // 最大小数点位数
     QString Opflag; // + - * / .....
+    int base;       // 2 8 10 16 当前进制
     std::string inputexpression;
 
     Calculator();
     ~Calculator() = default;
-    // * EditNum function performs editing operations on a number.
-    // *
-    // * @param input A QString representing the input value.
-    // *
-    // * @return void
-    // *
-    // * @throws None
+
+    // 输入单目运算符或者数值
     void EditNum(QString input);
 
+    // 输入16进制的字母
+    void EditHex(QString input);
     // 输入双目运算符
     void EditOp(QString input);
     // 进行计算
