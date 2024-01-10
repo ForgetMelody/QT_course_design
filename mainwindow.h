@@ -36,9 +36,9 @@ public:
     ~MainWindow();
 
     // 存储widget
-    QPushButton *numButtons[54]; // 单目数值操作类型 0~9 pi e . ±
-    QPushButton *opButtons[13];  // 双目数值操作类型 + - * /
-    QPushButton *hexButtons[6];  // 16进制操作类型 (由于C和Clear的C冲突了，所以这部分单独分开)
+    QPushButton *numButtons[57]; // 单目数值操作类型 0~9 pi e . ±
+    QPushButton *opButtons[19];  // 双目数值操作类型 + - * / % mod Logic....
+    QPushButton *hexButtons[6];  // 16进制操作类型 ABCDEF(由于C和Clear的C冲突了，所以这部分单独分开)
     // 加载样式
     void loadStyleSheet(const QString &styleSheetFile);
     // 处理和映射按键信号

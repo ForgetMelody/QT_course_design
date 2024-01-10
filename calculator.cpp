@@ -43,7 +43,7 @@ void Calculator::EditNum(QString input)
         else
         {
             // 小数点之后
-            scale[Index] *= (1 / base);
+            scale[Index] *= (1 / double(base));
             Num[Index] += IsNeg[Index] * in * scale[Index];
         }
     }
@@ -91,7 +91,7 @@ void Calculator::EditNum(QString input)
     {
         if (scale[Index] < 1)
         {
-            scale[Index] *= base;
+            scale[Index] *= double(base);
             Num[Index] -= fmod(Num[Index], scale[Index]);
         }
         else
@@ -112,13 +112,13 @@ void Calculator::EditNum(QString input)
     else if (input == "1/x")
     {
         Num[Index] = 1 / Num[Index];
-        scale[Index] = pow(base, -getScale(Num[Index]));
+        scale[Index] = pow(10, -getScale(Num[Index]));
         afterPoint[Index] = scale[Index] < 1 ? true : false;
     }
     else if (input == "X²")
     {
         Num[Index] = pow(Num[Index], 2);
-        scale[Index] = pow(base, -getScale(Num[Index]));
+        scale[Index] = pow(10, -getScale(Num[Index]));
         afterPoint[Index] = scale[Index] < 1 ? true : false;
         IsNeg[Index] = 1;
     }
@@ -129,7 +129,7 @@ void Calculator::EditNum(QString input)
             return;
         }
         Num[Index] = pow(Num[Index], 0.5);
-        scale[Index] = pow(base, -getScale(Num[Index]));
+        scale[Index] = pow(10, -getScale(Num[Index]));
         afterPoint[Index] = scale[Index] < 1 ? true : false;
         IsNeg[Index] = Num[Index] >= 0 ? 1 : -1;
     }
@@ -143,6 +143,27 @@ void Calculator::EditNum(QString input)
     else if (input == "ln")
     {
         Num[Index] = log(Num[Index]);
+        scale[Index] = pow(10, -getScale(Num[Index]));
+        afterPoint[Index] = scale[Index] < 1 ? true : false;
+        IsNeg[Index] = 1;
+    }
+    else if (input == "<<")
+    {
+        Num[Index] = int(Num[Index] * 2);
+        scale[Index] = pow(10, -getScale(Num[Index]));
+        afterPoint[Index] = scale[Index] < 1 ? true : false;
+        IsNeg[Index] = 1;
+    }
+    else if (input == ">>")
+    {
+        Num[Index] = int(Num[Index] / 2);
+        scale[Index] = pow(10, -getScale(Num[Index]));
+        afterPoint[Index] = scale[Index] < 1 ? true : false;
+        IsNeg[Index] = 1;
+    }
+    else if (input == "NOT")
+    {
+        Num[Index] = ~int(Num[Index]);
         scale[Index] = pow(10, -getScale(Num[Index]));
         afterPoint[Index] = scale[Index] < 1 ? true : false;
         IsNeg[Index] = 1;
@@ -186,21 +207,25 @@ void Calculator::EditOp(QString input)
 void Calculator::doCalculation()
 {
     if (Opflag == "+")
-    {
         result = Num[0] + Num[1];
-    }
     else if (Opflag == "-")
-    {
         result = Num[0] - Num[1];
-    }
     else if (Opflag == "×")
-    {
         result = Num[0] * Num[1];
-    }
     else if (Opflag == "÷")
-    {
         result = Num[0] / Num[1];
-    }
+    else if (Opflag == "AND")
+        result = int(Num[0]) & int(Num[1]);
+    else if (Opflag == "OR")
+        result = int(Num[0]) | int(Num[1]);
+    else if (Opflag == "XOR")
+        result = int(Num[0]) ^ int(Num[1]);
+    else if (Opflag == "NOR")
+        result = ~(int(Num[0]) | int(Num[1]));
+    else if (Opflag == "NAND")
+        result = ~(int(Num[0]) & int(Num[1]));
+    else if (Opflag == "MOD")
+        result = fmod(Num[0], Num[1]);
 
     // 将运算结果存入Num[0]
     Num[0] = result;

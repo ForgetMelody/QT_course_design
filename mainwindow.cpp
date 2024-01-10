@@ -254,8 +254,12 @@ void MainWindow::mappingSignalAndSlot()
     numButtons[52] = ui->btn10times;
     // ln
     numButtons[53] = ui->btnLn;
-
-    for (int i = 0; i < 54; i++)
+    // << >>
+    numButtons[54] = ui->btnLeftShift;
+    numButtons[55] = ui->btnRightShift;
+    // NOT
+    numButtons[56] = ui->btnNOT;
+    for (int i = 0; i < 57; i++)
     {
         connect(numButtons[i], SIGNAL(clicked()), NumMapper, SLOT(map()));
         NumMapper->setMapping(numButtons[i], i);
@@ -265,6 +269,7 @@ void MainWindow::mappingSignalAndSlot()
     // operations
     QSignalMapper *OpMapper = new QSignalMapper(this);
 
+    // + - * /
     opButtons[0] = ui->btnAdd;
     opButtons[1] = ui->btnMinus;
     opButtons[2] = ui->btnMultiple;
@@ -281,7 +286,17 @@ void MainWindow::mappingSignalAndSlot()
     opButtons[11] = ui->btnMultiple_3;
     opButtons[12] = ui->btnDivide_3;
 
-    for (int i = 0; i < 13; i++)
+    // MOD
+    opButtons[13] = ui->btnMod;
+    // Logitech
+    opButtons[14] = ui->btnAND;
+    opButtons[15] = ui->btnOR;
+    // opButtons[16] = ui->btnNOT;
+    opButtons[16] = ui->btnXOR;
+    opButtons[17] = ui->btnNAND;
+    opButtons[18] = ui->btnNOR;
+
+    for (int i = 0; i < 19; i++)
     {
         connect(opButtons[i], SIGNAL(clicked()), OpMapper, SLOT(map()));
         OpMapper->setMapping(opButtons[i], i);
