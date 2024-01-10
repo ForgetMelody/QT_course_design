@@ -5,6 +5,7 @@
 #include <QMessageBox>
 #include <QFile>
 #include <QString>
+#include <QDate>
 #include <QSignalMapper>
 #include <calculator.h>
 
@@ -39,6 +40,9 @@ public:
     QPushButton *numButtons[57]; // 单目数值操作类型 0~9 pi e . ±
     QPushButton *opButtons[19];  // 双目数值操作类型 + - * / % mod Logic....
     QPushButton *hexButtons[6];  // 16进制操作类型 ABCDEF(由于C和Clear的C冲突了，所以这部分单独分开)
+
+    //日期计算相关
+    QDate date1,date2;
     // 加载样式
     void loadStyleSheet(const QString &styleSheetFile);
     // 处理和映射按键信号
@@ -48,6 +52,7 @@ public:
     void UpdateMainLabel();
     void UpdateUnderLabel();
     void UpdateProgrammerLabel();
+    void UpdateDate();
 private slots:
     void on_btnSwitchMod_currentIndexChanged(int index);
     // number button or special button like e,π
@@ -59,6 +64,10 @@ private slots:
     void on_DecRadioBtn_clicked();
     void on_OctRadioBtn_clicked();
     void on_BinRadioBtn_clicked();
+
+    void on_date2Edit_userDateChanged(const QDate &date);
+
+    void on_dateEdit_userDateChanged(const QDate &date);
 
 private:
     Ui::MainWindow *ui;

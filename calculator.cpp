@@ -204,6 +204,7 @@ void Calculator::EditOp(QString input)
         Index = 1;
     }
 }
+
 void Calculator::doCalculation()
 {
     if (Opflag == "+")

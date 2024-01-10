@@ -20,6 +20,12 @@ MainWindow::MainWindow(QWidget *parent)
     // Programmer
     ui->DecRadioBtn->setChecked(true);
     ui->btnDot_3->setEnabled(false);
+
+    // date
+    ui->dateEdit->setCalendarPopup(true);
+    ui->date2Edit->setCalendarPopup(true);
+    ui->dateEdit->setDate(QDate::currentDate());
+    ui->date2Edit->setDate(QDate::currentDate());
 }
 
 MainWindow::~MainWindow()
@@ -174,6 +180,33 @@ void MainWindow::UpdateProgrammerLabel()
     // 将二进制转为十六进制
     text = QString::number(int(c.Num[c.Index]), 16);
     ui->HexLabel->setText(text);
+}
+
+void MainWindow::UpdateDate()
+{
+    qint64 daysbetween = date1.daysTo(date2);
+    if (daysbetween < 0)
+        daysbetween = -daysbetween;
+    // 转换为 x year x month x week x day（如果足够
+    qint64 years = daysbetween / 365;
+    qint64 months = daysbetween % 365 / 30;
+    qint64 weeks = daysbetween % 365 % 30 / 7;
+    qint64 days = daysbetween % 365 % 30 % 7;
+    // 仅在 year  month week >0 时显示
+    if (years > 0)
+        ui->timeResultLabel->setText(QString::number(years) + " years " +
+                                     QString::number(months) + " months " +
+                                     QString::number(weeks) + " weeks " +
+                                     QString::number(days) + " days");
+    else if (months > 0)
+        ui->timeResultLabel->setText(QString::number(months) + " months " +
+                                     QString::number(weeks) + " weeks " +
+                                     QString::number(days) + " days");
+    else if (weeks > 0)
+        ui->timeResultLabel->setText(QString::number(weeks) + " weeks " +
+                                     QString::number(days) + " days");
+    else
+        ui->timeResultLabel->setText(QString::number(daysbetween) + " day");
 }
 /**
  * Maps the signals and slots for the MainWindow class.
@@ -387,4 +420,16 @@ void MainWindow::on_BinRadioBtn_clicked()
 
     QString text = QString::number(int(c.Num[c.Index]), c.base);
     ui->textLabelmain_3->setText(text);
+}
+void MainWindow::on_dateEdit_userDateChanged(const QDate &date)
+{
+    qDebug() << "date1 changed:" << date1;
+    date1 = date;
+    UpdateDate();
+}
+void MainWindow::on_date2Edit_userDateChanged(const QDate &date)
+{
+    qDebug() << "date2 changed:" << date2;
+    date2 = date;
+    UpdateDate();
 }
